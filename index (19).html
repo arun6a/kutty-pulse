@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KuttyPulse | Marketing Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <button id="theme-toggle" class="theme-btn">🌓</button>
+
+    <div class="container">
+        <header>
+            <img id="profile-pic" src="" alt="Kutty Machine" class="logo-img">
+            <h1>Kutty Machine</h1>
+            <p>Promotional Tracking & Content Hub</p>
+            <div id="sub-status" class="sub-badge">SYSTEM INITIALIZING...</div>
+        </header>
+
+        <div class="video-preview">
+            <div id="player"></div>
+        </div>
+
+        <section class="analytics-container">
+            <h2>📊 Live Performance Audit</h2>
+            <div class="dashboard-wrapper">
+                <div class="scanner-line"></div>
+                <iframe id="streamlit-dashboard" src="https://kutty-machine-yt-tracking.streamlit.app/?embed=true&embed_options=dark_theme" frameborder="0"></iframe>
+            </div>
+        </section>
+
+        <div class="card-grid">
+            <a href="https://youtube.com/@kuttymachine" target="_blank" class="card">
+                <h3>Official YouTube Channel</h3>
+                <span class="btn">Visit Channel</span>
+            </a>
+        </div>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="script.js"></script>
+</body>
+</html>
