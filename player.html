@@ -4,14 +4,13 @@
     <div id="player"></div>
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        let player;
         function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
+            new YT.Player('player', {
                 height: '100vh',
                 width: '100%',
                 playerVars: {
                     'listType': 'playlist',
-                    'list': 'UUFt_1FffIE4OS5b-VK_8w3Q', // Your Uploads ID
+                    'list': 'UUFt_1FffIE4OS5b-VK_8w3Q',
                     'origin': window.location.origin
                 }
             });
