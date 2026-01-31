@@ -5,74 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kutty Pulse Player Bridge</title>
     <style>
-        /* Forces zero gaps so the video fills the card */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body, html { 
-            width: 100%; 
-            height: 100%; 
-            background: #000; 
-            overflow: hidden; 
-        }
-
-        #video-wrapper {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        iframe {
-            width: 100% !important;
-            height: 100% !important;
-            border: none !important;
-        }
+        body, html { width: 100%; height: 100%; background: #000; overflow: hidden; }
+        #video-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+        iframe { width: 100% !important; height: 100% !important; border: none !important; }
     </style>
 </head>
 <body>
-
-    <div id="video-wrapper">
-        <div id="player"></div>
-    </div>
-
+    <div id="video-wrapper"><div id="player"></div></div>
     <script>
-        // 1. Capture the video ID from the URL parameter '?v='
         const urlParams = new URLSearchParams(window.location.search);
         const videoId = urlParams.get('v'); 
-
-        // 2. Load YouTube IFrame API
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
         var ytPlayer;
         function onYouTubeIframeAPIReady() {
-            if (!videoId) return; // Exit if no ID is passed
-            
+            if (!videoId) return;
             ytPlayer = new YT.Player('player', {
-                height: '100%',
-                width: '100%',
-                videoId: videoId,
-                playerVars: {
-                    'autoplay': 1,
-                    'mute': 0,
-                    'controls': 1,
-                    'modestbranding': 1,
-                    'rel': 0,
-                    'showinfo': 0,
-                    'iv_load_policy': 3,
-                    'playsinline': 1 
-                },
-                events: {
-                    'onReady': (event) => {
-                        event.target.playVideo();
-                    }
-                }
+                height: '100%', width: '100%', videoId: videoId,
+                playerVars: { 'autoplay': 1, 'controls': 1, 'modestbranding': 1, 'rel': 0, 'playsinline': 1 },
+                events: { 'onReady': (event) => { event.target.playVideo(); } }
             });
         }
     </script>
