@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kutty Machine | Marketing Hub</title>
+    <title>KuttyPulse | Marketing Hub</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -12,30 +12,31 @@
         <header>
             <h1>Kutty Machine</h1>
             <p>Promotional Tracking & Content Hub</p>
+            <div id="sub-status" class="sub-badge">LIVE DATA ACTIVE</div>
         </header>
 
-        <div class="card player-card">
-            <h3 id="preview-title">📺 preview player</h3>
-            <div class="video-preview">
+        <div class="video-preview">
+            <h3 id="preview-title" style="color: white; padding: 10px; font-size: 14px;">Select Content</h3>
+            <div class="iframe-wrapper">
                 <iframe id="main-preview" src="" frameborder="0" allow="autoplay; encrypted-media; playsinline" allowfullscreen></iframe>
             </div>
         </div>
 
-        <div class="analytics-grid">
-            <div class="card">
-                <h3>Live Performance</h3>
-                <h2 id="total-views">Loading...</h2>
-                <small>Total Network Views</small>
+        <section class="analytics-container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <small>Total Views</small>
+                    <h2 id="total-views">0</h2>
+                </div>
+                <div class="stat-card">
+                    <small>Top Gainer</small>
+                    <h2 id="top-gainer-name">...</h2>
+                </div>
             </div>
-            <div class="card">
-                <h3>Top Gainer</h3>
-                <h2 id="top-gainer-name">...</h2>
-                <p id="top-gainer-val"></p>
-            </div>
-        </div>
+        </section>
 
         <div class="table-container">
-            <table id="performanceTable">
+            <table>
                 <thead><tr><th>Channel</th><th>Views</th><th>Gain</th></tr></thead>
                 <tbody id="tableBody"></tbody>
             </table>
