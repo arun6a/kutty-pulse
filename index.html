@@ -3,42 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KuttyPulse | Marketing Hub</title>
+    <title>Kutty Machine | Marketing Hub</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <button id="theme-toggle" class="theme-btn">🌓</button>
-
     <div class="container">
         <header>
-            <img id="profile-pic" src="" alt="Kutty Machine" class="logo-img">
             <h1>Kutty Machine</h1>
             <p>Promotional Tracking & Content Hub</p>
-            <div id="sub-status" class="sub-badge">SYSTEM INITIALIZING...</div>
         </header>
 
-        <div class="video-preview">
-            <div id="player"></div>
+        <div class="card player-card">
+            <h3 id="preview-title">📺 preview player</h3>
+            <div class="video-preview">
+                <iframe id="main-preview" src="" frameborder="0" allow="autoplay; encrypted-media; playsinline" allowfullscreen></iframe>
+            </div>
         </div>
 
-        <section class="analytics-container">
-            <h2>📊 Live Performance Audit</h2>
-            <div class="dashboard-wrapper">
-                <div class="scanner-line"></div>
-                <iframe id="streamlit-dashboard" src="https://kutty-machine-yt-tracking.streamlit.app/?embed=true&embed_options=dark_theme" frameborder="0"></iframe>
+        <div class="analytics-grid">
+            <div class="card">
+                <h3>Live Performance</h3>
+                <h2 id="total-views">Loading...</h2>
+                <small>Total Network Views</small>
             </div>
-        </section>
+            <div class="card">
+                <h3>Top Gainer</h3>
+                <h2 id="top-gainer-name">...</h2>
+                <p id="top-gainer-val"></p>
+            </div>
+        </div>
 
-        <div class="card-grid">
-            <a href="https://youtube.com/@kuttymachine" target="_blank" class="card">
-                <h3>Official YouTube Channel</h3>
-                <span class="btn">Visit Channel</span>
-            </a>
+        <div class="table-container">
+            <table id="performanceTable">
+                <thead><tr><th>Channel</th><th>Views</th><th>Gain</th></tr></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
         </div>
     </div>
-
-    <script src="https://www.youtube.com/iframe_api"></script>
     <script src="script.js"></script>
 </body>
 </html>
