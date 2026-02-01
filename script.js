@@ -1,35 +1,57 @@
-let ytPlayer;
-function onYouTubeIframeAPIReady() {
-    const channelID = "UCFt_1FffIE4OS5b-VK_8w3Q";
-    const uploadsID = channelID.replace(/^UC/, 'UU');
+const S_ID = '1rUV_hwRCU74-aUn5OjrH15lHoWU-LmtT3nLtlNELDVk';
+const S_NAME = 'Form%20Responses%201';
+const DATA_URL = `https://docs.google.com/spreadsheets/d/${S_ID}/gviz/tq?tqx=out:csv&sheet=${S_NAME}`;
 
-    ytPlayer = new YT.Player('player', {
-        height: '100%',
-        width: '100%',
-        playerVars: {
-            'listType': 'playlist',
-            'list': uploadsID,
-            'origin': window.location.origin, // Automatically uses your hosted URL
-            'enablejsapi': 1
-        }
-    });
+// THE FIX: Yesterday's 3PM playback logic
+function playVideo(item) {
+    let url = item.link;
+    if(url.includes("watch?v=")) url = url.replace("watch?v=", "embed/");
+    if(url.includes("youtu.be/")) url = url.replace("youtu.be/", "youtube.com/embed/");
+    
+    // mobile-specific parameters to bypass Error 153
+    document.getElementById('main-preview').src = url + "?autoplay=1&playsinline=1&rel=0";
+    document.getElementById('preview-title').innerText = "📺 preview player: " + item.name;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const channelID = "UCFt_1FffIE4OS5b-VK_8w3Q";
-    const sheetID = "1rUV_hwRCU74-aUn5OjrH15lHoWU-LmtT3nLtlNELDVk";
+async function loadData() {
+    try {
+        const res = await fetch(DATA_URL);
+        const csv = await res.text();
+        const rows = csv.split('\n').slice(1);
 
-    document.getElementById('profile-pic').src = `https://www.banner.yt/${channelID}/avatar`;
+        const data = rows.map(r => {
+            const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(s => s.replace(/"/g, '').trim());
+            return {
+                name: c[0], link: c[1], 
+                views: parseInt(c[2]) || 0, 
+                yesterday: parseInt(c[3]) || 0,
+                gain: (parseInt(c[2]) || 0) - (parseInt(c[3]) || 0)
+            };
+        }).filter(x => x.name);
 
-    async function fetchStats() {
-        try {
-            const response = await fetch(`https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:csv`);
-            const text = await response.text();
-            const total = text.split('\n').slice(1).reduce((acc, row) => acc + (parseInt(row.split(',')[2]?.replace(/"/g, '')) || 0), 0);
-            document.getElementById('sub-status').innerHTML = `● METRICS SYNCED: <b>${total.toLocaleString()}</b> VIEWS`;
-        } catch (e) { document.getElementById('sub-status').innerText = "● SYSTEM ACTIVE"; }
+        updateUI(data);
+    } catch (e) { console.error("Sync Error"); }
+}
+
+function updateUI(dataSet) {
+    const totalViews = dataSet.reduce((s, i) => s + i.views, 0);
+    document.getElementById('total-views').innerText = totalViews.toLocaleString();
+
+    const topG = [...dataSet].sort((a,b) => b.gain - a.gain)[0];
+    if(topG) {
+        document.getElementById('top-gainer-name').innerText = topG.name;
+        document.getElementById('top-gainer-val').innerText = "+" + topG.gain + " Today";
+        playVideo(topG); // Auto-load the gainer
     }
-    fetchStats();
 
-    document.getElementById('theme-toggle').onclick = () => document.body.classList.toggle('light-mode');
-});
+    document.getElementById('tableBody').innerHTML = dataSet.map(i => `
+        <tr onclick='playVideo(${JSON.stringify(i)})'>
+            <td>${i.name}</td>
+            <td>${i.views.toLocaleString()}</td>
+            <td>+${i.gain}</td>
+        </tr>
+    `).join('');
+}
+
+loadData();
+        
