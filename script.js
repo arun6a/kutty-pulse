@@ -2,24 +2,27 @@ const S_ID = '1rUV_hwRCU74-aUn5OjrH15lHoWU-LmtT3nLtlNELDVk';
 const S_NAME = 'Form%20Responses%201';
 const DATA_URL = `https://docs.google.com/spreadsheets/d/${S_ID}/gviz/tq?tqx=out:csv&sheet=${S_NAME}`;
 
-// THE FIX: Yesterday's 3PM playback logic
+// THE YESTERDAY 3PM FIX: Logic to convert links and play
 function playVideo(item) {
     let url = item.link;
+    // Conversion logic that bypassed Error 153
     if(url.includes("watch?v=")) url = url.replace("watch?v=", "embed/");
     if(url.includes("youtu.be/")) url = url.replace("youtu.be/", "youtube.com/embed/");
     
-    // mobile-specific parameters to bypass Error 153
-    document.getElementById('main-preview').src = url + "?autoplay=1&playsinline=1&rel=0";
-    document.getElementById('preview-title').innerText = "📺 preview player: " + item.name;
+    const player = document.getElementById('main-preview');
+    if(player) {
+        player.src = url + "?autoplay=1&playsinline=1&modestbranding=1";
+        document.getElementById('preview-title').innerText = "📺 Playing: " + item.name;
+    }
 }
 
-async function loadData() {
+async function init() {
     try {
         const res = await fetch(DATA_URL);
         const csv = await res.text();
         const rows = csv.split('\n').slice(1);
 
-        const data = rows.map(r => {
+        const dataSet = rows.map(r => {
             const c = r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(s => s.replace(/"/g, '').trim());
             return {
                 name: c[0], link: c[1], 
@@ -29,29 +32,26 @@ async function loadData() {
             };
         }).filter(x => x.name);
 
-        updateUI(data);
-    } catch (e) { console.error("Sync Error"); }
+        updateDashboard(dataSet);
+    } catch (e) { console.error("Data Load Error"); }
 }
 
-function updateUI(dataSet) {
-    const totalViews = dataSet.reduce((s, i) => s + i.views, 0);
-    document.getElementById('total-views').innerText = totalViews.toLocaleString();
-
+function updateDashboard(dataSet) {
+    document.getElementById('total-views').innerText = dataSet.reduce((s, i) => s + i.views, 0).toLocaleString();
+    
     const topG = [...dataSet].sort((a,b) => b.gain - a.gain)[0];
     if(topG) {
         document.getElementById('top-gainer-name').innerText = topG.name;
-        document.getElementById('top-gainer-val').innerText = "+" + topG.gain + " Today";
-        playVideo(topG); // Auto-load the gainer
+        playVideo(topG); // Auto-play the top gainer
     }
 
     document.getElementById('tableBody').innerHTML = dataSet.map(i => `
-        <tr onclick='playVideo(${JSON.stringify(i)})'>
-            <td>${i.name}</td>
+        <tr onclick='playVideo(${JSON.stringify(i)})' style="cursor:pointer">
+            <td><strong>${i.name}</strong></td>
             <td>${i.views.toLocaleString()}</td>
-            <td>+${i.gain}</td>
+            <td style="color:#FF3B30">+${i.gain}</td>
         </tr>
     `).join('');
 }
 
-loadData();
-        
+init();
